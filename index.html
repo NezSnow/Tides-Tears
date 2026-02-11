@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tides &amp; Tears - Personal Blog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>.grid-overlay {
+    background-image: linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+    background-size: 20% 100vh, 100vw 100px;pointer-events: none
+    }
+    .vital-baseline {
+        stroke: rgba(200, 75, 49, 0.15);
+        stroke-width: 0.5;
+    }
+    .vital-sign path {
+        stroke: rgba(200, 75, 49, 0.85);
+        stroke-width: 1.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+    }
+    .texture-bg {
+    background-image: radial-gradient(circle at top, #0b1220 0, #020617 55%, #000 100%);
+    background-size: cover;
+    background-position: center
+    }.dark .texture-bg {}</style>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#C84B31","background-light": "#020617","background-dark": "#020617","overlay-dark": "rgba(15, 23, 42, 0.9)",
+                        "overlay-light": "rgba(15, 23, 42, 0.9)",
+                        "text-light": "#E5E7EB",
+                        "text-dark": "#F9FAFB",
+                    },
+                    fontFamily: {
+                        display: ["'Playfair Display'", "serif"],
+                        sans: ["'Montserrat'", "sans-serif"],
+                    },
+                    letterSpacing: {
+                        widest: '.25em',
+                    }
+                },
+            },
+        };
+        window.addEventListener('load', function () {
+            AOS.init({
+                duration: 1200,
+                easing: 'ease-out-cubic',
+                once: true,
+            });
+        });
+    </script>
+</head>
+<body class="bg-background-dark text-text-dark font-sans transition-colors duration-300" data-aos="fade-in">
+<div class="relative min-h-screen w-full texture-bg overflow-hidden flex flex-col">
+<div class="absolute inset-0 bg-background-light/90 dark:bg-background-dark/80 mix-blend-multiply dark:mix-blend-normal z-0"></div>
+<div class="absolute inset-0 grid-overlay z-0 opacity-30 dark:opacity-20 border-l border-r border-white/10 mx-4 md:mx-12"></div>
+<div class="relative z-10 flex flex-col min-h-screen">
+<nav class="w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em]">
+<div class="font-bold hidden md:block opacity-80">
+                   Tides &amp; Tears
+                </div>
+<div class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:text-primary transition-colors">
+<span>All Stories</span>
+<span class="text-lg leading-none">+</span>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex items-center gap-2 cursor-pointer group">
+<span class="group-hover:text-primary transition-colors">Menu</span>
+<div class="h-4 w-4 flex flex-col justify-center space-y-1">
+<div class="w-full h-px bg-current group-hover:bg-primary"></div>
+<div class="w-full h-px bg-current group-hover:bg-primary"></div>
+<div class="w-full h-px bg-current group-hover:bg-primary"></div>
+</div>
+</div>
+</div>
+</nav>
+<main class="flex-grow flex flex-col items-center justify-center relative px-4" data-aos="fade-up" data-aos-delay="200">
+<div class="relative z-20 text-center space-y-2 md:space-y-4 select-none mt-10 md:mt-0">
+<h1 class="font-display text-5xl md:text-8xl lg:text-9xl tracking-widest uppercase text-text-light dark:text-text-dark drop-shadow-lg mix-blend-difference dark:mix-blend-normal">
+<span class="block">Tides</span>
+<span class="block italic font-light lowercase text-4xl md:text-7xl lg:text-8xl my-2 md:my-4 font-serif text-primary opacity-90">&amp;</span>
+<span class="block">Tears</span>
+</h1>
+<p class="font-display italic text-lg md:text-2xl tracking-widest text-text-dark/80 mt-4 md:mt-6 font-light">
+                        An Archive of Scars &amp; Healing
+                    </p>
+<div class="mt-8 flex justify-center">
+<a class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-8 py-3 text-primary hover:bg-primary hover:text-background-dark transition-colors text-sm md:text-base font-semibold tracking-widest group" href="#">
+                                Read My Story
+                                <span class="group-hover:translate-x-1 transition-transform">→</span>
+</a>
+</div>
+</div>
+</main>
+<footer class="w-full py-8 px-6 md:px-12 border-t border-white/10 flex justify-between items-end text-xs uppercase tracking-[0.2em] opacity-60">
+<div class="space-x-8 hidden md:flex">
+<a class="hover:text-primary transition-colors" href="#">1 — About</a>
+<a class="hover:text-primary transition-colors" href="#">2 — Journal</a>
+</div>
+<div class="flex-grow flex justify-center items-center min-h-[60px]" data-aos="fade-in" data-aos-duration="1000" data-aos-delay="150" data-aos-offset="80" data-aos-easing="ease-out">
+<div class="flex flex-col items-center gap-2 overflow-hidden">
+<svg class="w-28 h-8 md:w-36 md:h-10" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<line class="vital-baseline" x1="0" y1="16" x2="180" y2="16"/>
+<g class="vital-sign">
+<path d="M0 16 L12 16 L20 4 L28 28 L36 16 L60 16 L72 16 L80 4 L88 28 L96 16 L120 16 L132 16 L140 4 L148 28 L156 16 L180 16"/>
+<animateTransform attributeName="transform" type="translate" values="0 0; -60 0" dur="4.5s" repeatCount="indefinite" calcMode="linear"/>
+</g>
+</svg>
+<span class="h-2 w-2 rounded-full bg-primary animate-pulse" title="Still here"></span>
+</div>
+</div>
+<div class="space-x-8 hidden md:flex text-right">
+<a class="hover:text-primary transition-colors" href="#">3 — Contact</a>
+<a class="hover:text-primary transition-colors" href="#">4 — Socials</a>
+</div>
+<div class="flex w-full justify-between md:hidden absolute bottom-8 left-0 px-8">
+<a class="hover:text-primary" href="#">About</a>
+<a class="hover:text-primary" href="#">Story</a>
+<a class="hover:text-primary" href="#">Contact</a>
+</div>
+</footer>
+</div>
+<div class="absolute top-0 bottom-0 left-[20%] w-px bg-white/5 pointer-events-none z-0"></div>
+<div class="absolute top-0 bottom-0 right-[20%] w-px bg-white/5 pointer-events-none z-0"></div>
+<div class="absolute top-0 bottom-0 left-[50%] w-px bg-white/5 pointer-events-none z-0"></div>
+</div>
+</body></html>
