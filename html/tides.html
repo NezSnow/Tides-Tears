@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <script>(function(){var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark');document.documentElement.classList.add('light');}})();</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bawat Kapit at Alis Mo. — Tides &amp; Tears</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .grid-overlay {
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      background-size: 20% 100vh, 100vw 100px;
+      pointer-events: none;
+    }
+    .texture-bg {
+      background-image: radial-gradient(circle at top, #0b1220 0, #020617 55%, #000 100%);
+      background-size: cover;
+      background-position: center;
+    }
+    .vertical-line { position: absolute; top: 0; bottom: 0; width: 1px; pointer-events: none; }
+    .edge-line { background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.04) 8%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 92%, transparent 100%); }
+    .center-line { background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.035) 10%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.035) 90%, transparent 100%); }
+    .menu-dropdown { opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; }
+    .menu-group.menu-open .menu-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+    .theme-btn { width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: inherit; cursor: pointer; transition: color 0.2s, border-color 0.2s, background 0.2s; }
+    .theme-btn:hover { color: #C84B31; border-color: rgba(200,75,49,0.4); background: rgba(200,75,49,0.08); }
+    html.light .theme-btn { border-color: rgba(0,0,0,0.12); color: #0f172a; }
+    html.light .theme-btn:hover { color: #C84B31; }
+    html.light body{ background-color: #f1f5f9 !important; color: #0f172a !important; }
+    html.light .texture-bg{ background-image: none !important; background-color: #f1f5f9 !important; }
+    html.light .bg-background-dark,html.light [class*="bg-background"]{ background-color: #f1f5f9 !important; background-image: none !important; }
+    html.light .text-text-dark,html.light .text-text-light{ color: #0f172a !important; }
+    html.light .text-text-dark\/60,html.light .text-text-light\/90{ color: #334155 !important; }
+    html.light .border-white\/10,html.light [class*="border-white"]{ border-color: rgba(0,0,0,0.08) !important; }
+    html.light nav{ background: rgba(241,245,249,0.98) !important; }
+    html.light .bg-white\/5{ background-color: rgba(0,0,0,0.04) !important; }
+    html.light .bg-primary\/10{ background-color: rgba(200,75,49,0.1) !important; }
+    html.light main,html.light section{ background-color: transparent !important; }
+    html.light .grid-overlay{ opacity: 0.15 !important; }
+    html.light h1,html.light h2,html.light h3{ color: #0f172a !important; }
+    html.light .story-article .story-highlight{ background: rgba(200,75,49,0.1); }
+
+    .story-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .story-meta {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+    .story-article {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      max-width: 65ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .story-article p {
+      margin-bottom: 1.4em;
+    }
+    .story-article .story-highlight {
+      background: rgba(200, 75, 49, 0.12);
+      border-left: 3px solid #C84B31;
+      padding: 0.6em 0 0.6em 1em;
+      margin: 1.2em 0;
+      font-style: italic;
+    }
+    .story-header { position: relative; }
+    .volume-control-wrap {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-direction: row-reverse;
+    }
+    .volume-btn {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      color: rgba(249, 250, 251, 0.9);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+      transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+    .volume-btn:hover {
+      color: #C84B31;
+      border-color: rgba(200, 75, 49, 0.35);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(200, 75, 49, 0.1), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .volume-btn:active { transform: scale(0.94); }
+    .volume-btn.muted { color: rgba(249, 250, 251, 0.45); }
+    .volume-btn .vol-icon { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .volume-slider-wrap {
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+    .volume-control-wrap.open .volume-slider-wrap {
+      max-width: 6rem;
+      opacity: 1;
+    }
+    .volume-slider-wrap input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to right, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.12) 100%);
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .volume-slider-wrap input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d85a3e 0%, #C84B31 50%, #a63d28 100%);
+      cursor: grab;
+      border: none;
+      box-shadow: 0 2px 8px rgba(200, 75, 49, 0.4), 0 1px 0 rgba(255,255,255,0.2) inset;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .volume-slider-wrap input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+      box-shadow: 0 3px 12px rgba(200, 75, 49, 0.5), 0 1px 0 rgba(255,255,255,0.25) inset;
+    }
+    .volume-slider-wrap input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; }
+    .volume-slider-wrap input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d85a3e 0%, #C84B31 50%, #a63d28 100%);
+      cursor: grab;
+      border: none;
+      box-shadow: 0 2px 8px rgba(200, 75, 49, 0.4), 0 1px 0 rgba(255,255,255,0.2) inset;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .volume-slider-wrap input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.12);
+      box-shadow: 0 3px 12px rgba(200, 75, 49, 0.5), 0 1px 0 rgba(255,255,255,0.25) inset;
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#C84B31",
+            "background-light": "#020617",
+            "background-dark": "#020617",
+            "text-light": "#E5E7EB",
+            "text-dark": "#F9FAFB",
+          },
+          fontFamily: {
+            display: ["'Playfair Display'", "serif"],
+            sans: ["'Montserrat'", "sans-serif"],
+          },
+          letterSpacing: { widest: ".25em" },
+        },
+      },
+    };
+
+    window.addEventListener("load", function () {
+      AOS.init({ duration: 900, easing: "ease-out-cubic", once: true, offset: 60 });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      var menuGroup = document.querySelector('.menu-group');
+      var menuButton = document.getElementById('menu-button');
+      var menuDropdown = document.getElementById('menu-dropdown');
+      if (!menuGroup || !menuButton || !menuDropdown) return;
+
+      function closeMenu() {
+        menuGroup.classList.remove('menu-open');
+        menuButton.setAttribute('aria-expanded', 'false');
+      }
+
+      menuButton.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isOpen = menuGroup.classList.toggle('menu-open');
+        menuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      menuDropdown.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () { closeMenu(); });
+      });
+
+      document.addEventListener('click', function () { closeMenu(); });
+
+      var bgm = document.getElementById('story-bgm');
+      if (bgm) {
+        var played = false;
+        function tryPlay() {
+          if (played) return;
+          var p = bgm.play();
+          if (p && typeof p.then === 'function') p.then(function () { played = true; }).catch(function () {});
+          else played = true;
+        }
+        tryPlay();
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('touchstart', tryPlay, { once: true });
+      }
+
+      var volumeWrap = document.getElementById('volume-control-wrap');
+      var volumeBtn = document.getElementById('volume-btn');
+      var volumeSlider = document.getElementById('volume-slider');
+      var iconOn = document.getElementById('icon-volume-on');
+      var iconMute = document.getElementById('icon-volume-mute');
+      if (bgm && volumeWrap && volumeBtn && volumeSlider) {
+        volumeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          volumeWrap.classList.toggle('open');
+        });
+        document.addEventListener('click', function () {
+          volumeWrap.classList.remove('open');
+        });
+        if (volumeWrap) volumeWrap.addEventListener('click', function (e) { e.stopPropagation(); });
+        volumeSlider.addEventListener('input', function () {
+          var v = parseInt(volumeSlider.value, 10) / 100;
+          bgm.volume = v;
+          bgm.muted = v === 0;
+          volumeBtn.classList.toggle('muted', bgm.muted);
+          if (iconOn && iconMute) {
+            iconOn.classList.toggle('hidden', bgm.muted);
+            iconMute.classList.toggle('hidden', !bgm.muted);
+          }
+        });
+      }
+      function applyTheme(isLight) {
+        var html = document.documentElement;
+        var sun = document.getElementById('theme-icon-sun');
+        var moon = document.getElementById('theme-icon-moon');
+        if (isLight) { html.classList.remove('dark'); html.classList.add('light'); if (sun) sun.classList.add('hidden'); if (moon) moon.classList.remove('hidden'); }
+        else { html.classList.add('dark'); html.classList.remove('light'); if (sun) sun.classList.remove('hidden'); if (moon) moon.classList.add('hidden'); }
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      }
+      var themeToggle = document.getElementById('theme-toggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function () { applyTheme(document.documentElement.classList.contains('dark')); });
+        applyTheme(document.documentElement.classList.contains('light'));
+      }
+    });
+  </script>
+</head>
+<body class="bg-background-dark text-text-dark font-sans transition-colors duration-300 overflow-x-hidden">
+  <audio id="story-bgm" src="../audio/Niki - Backburner.mp3" loop preload="auto" aria-label="Background music for this story"></audio>
+  <div class="relative min-h-screen w-full texture-bg flex flex-col">
+    <div class="absolute inset-0 bg-background-dark/80 z-0"></div>
+    <div class="absolute inset-0 grid-overlay z-0 opacity-20 border-l border-r border-white/10 mx-4 md:mx-12"></div>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark/95 backdrop-blur-sm">
+        <a href="../index.html" class="font-bold hidden md:block opacity-80 hover:text-primary transition-colors">Tides &amp; Tears</a>
+        <a href="../index.html#stories" class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:text-primary transition-colors">
+          <span>All Stories</span>
+          <span class="text-lg leading-none">+</span>
+        </a>
+        <button type="button" class="theme-btn mr-2" id="theme-toggle" aria-label="Toggle light or dark mode" title="Theme">
+          <svg id="theme-icon-sun" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="theme-icon-moon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <div class="relative flex items-center space-x-6 menu-group" tabindex="0">
+          <button type="button" class="uppercase text-xs tracking-[0.2em] hover:text-primary transition-colors focus:outline-none focus:text-primary" aria-haspopup="true" aria-expanded="false" aria-controls="menu-dropdown" id="menu-button">Menu</button>
+          <div class="menu-dropdown absolute right-0 top-full pt-2 mt-1 min-w-[160px] z-30" id="menu-dropdown" role="menu" aria-orientation="vertical">
+            <div class="py-1 rounded border border-white/10 bg-background-dark/98 backdrop-blur-sm shadow-lg">
+              <a href="about.html" class="block w-full text-left px-4 py-2.5 hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">About</a>
+              <a href="support.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Support</a>
+              <a href="quotes.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Quotes</a>
+              <a href="feedback.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Feedback</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main class="flex-grow w-full max-w-3xl mx-auto px-4 md:px-0 py-12 md:py-16">
+        <header class="story-header mb-8 md:mb-10" data-aos="fade-down">
+          <div class="volume-control-wrap" id="volume-control-wrap" aria-label="Story audio controls">
+            <div class="volume-slider-wrap">
+              <input type="range" id="volume-slider" min="0" max="100" value="100" title="Volume">
+            </div>
+            <button type="button" class="volume-btn" id="volume-btn" aria-label="Volume and music controls" title="Volume">
+              <svg id="icon-volume-on" class="vol-icon w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+              <svg id="icon-volume-mute" class="vol-icon w-5 h-5 hidden" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                <line x1="23" y1="9" x2="16" y2="16"/>
+                <line x1="16" y1="9" x2="23" y2="16"/>
+              </svg>
+            </button>
+          </div>
+          <p class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-3">The middle</p>
+          <h1 class="story-title text-3xl md:text-5xl text-text-dark mb-4 pr-24">
+            Bawat Kapit at Alis Mo.
+          </h1>
+          <p class="story-meta text-text-dark/60">
+            Tides &amp; Tears • 6 min read
+          </p>
+        </header>
+
+        <figure class="mb-10" data-aos="fade-up">
+          <img src="../images/ETERNAL.JPG" alt="Cover image for Bawat Kapit at Alis Mo" class="w-full rounded-2xl border border-white/10 shadow-2xl object-cover">
+          <figcaption class="mt-2 text-center text-xs text-text-dark/45 font-sans italic tracking-wide"><cite>Eternal Sunshine of the Spotless Mind</cite> (2004)</figcaption>
+        </figure>
+
+        <article class="story-article text-text-light/90" data-aos="fade-up" data-aos-delay="150">
+          <p>Moments of doubt, clarity, and small victories. The in-between that shapes who we become.</p>
+          <p class="story-highlight">Here is where the story continues—placeholder for your words. Replace this with your own turning points, the tides that pulled you one way and then another.</p>
+          <p>Still writing. Still here.</p>
+        </article>
+
+        <div class="mt-10 flex items-center justify-between gap-4">
+          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-6 py-3 text-primary hover:bg-primary hover:text-background-dark transition-colors text-xs md:text-sm font-semibold tracking-[0.3em] uppercase">
+            ← Back to all stories
+          </a>
+        </div>
+      </main>
+    </div>
+
+    <div class="vertical-line left-[20%] edge-line z-0"></div>
+    <div class="vertical-line right-[20%] edge-line z-0"></div>
+    <div class="vertical-line left-1/2 -translate-x-px center-line z-0"></div>
+  </div>
+</body>
+</html>
