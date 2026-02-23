@@ -10,6 +10,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet" />
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js" defer></script>
+  <!-- Set your Supabase URL and anon key so feedback is shared for all visitors. Leave empty to use local-only storage. -->
+  <script>
+    window.TIDES_FEEDBACK_CONFIG = {
+      supabaseUrl: '',
+      supabaseAnonKey: ''
+    };
+  </script>
 
   <style>
     html { scroll-behavior: smooth; }
@@ -89,8 +97,15 @@
       });
 
       const FEEDBACK_KEY = 'tides-and-tears-feedback';
+      const config = window.TIDES_FEEDBACK_CONFIG || {};
+      const useSupabase = !!(config.supabaseUrl && config.supabaseAnonKey);
 
-      function getFeedbackList() {
+      function getSupabaseClient() {
+        if (!useSupabase || typeof window.supabase === 'undefined') return null;
+        return window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+      }
+
+      function getFeedbackListLocal() {
         try {
           const raw = localStorage.getItem(FEEDBACK_KEY);
           return raw ? JSON.parse(raw) : [];
@@ -99,28 +114,40 @@
         }
       }
 
-      function saveFeedbackList(list) {
+      function saveFeedbackListLocal(list) {
         localStorage.setItem(FEEDBACK_KEY, JSON.stringify(list));
       }
 
-      function renderFeedbackList() {
-        const list = getFeedbackList();
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function renderFeedbackList(list) {
         const container = document.getElementById('feedback-list');
         const emptyEl = document.getElementById('feedback-list-empty');
+        const noticeEl = document.getElementById('feedback-local-notice');
         if (!container) return;
-        if (list.length === 0) {
+        if (noticeEl) noticeEl.classList.toggle('hidden', useSupabase);
+        if (!list || list.length === 0) {
           container.innerHTML = '';
           if (emptyEl) emptyEl.classList.remove('hidden');
           return;
         }
         if (emptyEl) emptyEl.classList.add('hidden');
-        container.innerHTML = list.slice().reverse().map(function (item) {
-          const date = new Date(item.date);
-          const dateStr = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
-          const timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-          const safeName = escapeHtml(item.name || '');
-          const safeEmail = escapeHtml(item.email || '');
-          const safeMessage = escapeHtml(item.message || '').replace(/\n/g, '<br>');
+        var sorted = list.slice().sort(function (a, b) {
+          var da = new Date(a.date || a.created_at).getTime();
+          var db = new Date(b.date || b.created_at).getTime();
+          return db - da;
+        });
+        container.innerHTML = sorted.map(function (item) {
+          var date = new Date(item.date || item.created_at);
+          var dateStr = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+          var timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+          var safeName = escapeHtml(item.name || '');
+          var safeEmail = escapeHtml(item.email || '');
+          var safeMessage = escapeHtml(item.message || '').replace(/\n/g, '<br>');
           return '<article class="feedback-card rounded-r-lg border border-white/10 border-l-0 p-5 md:p-6 mb-5 last:mb-0">' +
             '<p class="feedback-message text-text-dark/90 text-base md:text-lg leading-relaxed italic">' + safeMessage + '</p>' +
             '<div class="mt-4 pt-4 border-t border-white/5 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-xs">' +
@@ -132,10 +159,40 @@
         }).join('');
       }
 
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+      function setListLoading(loading) {
+        var container = document.getElementById('feedback-list');
+        var emptyEl = document.getElementById('feedback-list-empty');
+        if (!container) return;
+        if (loading) {
+          emptyEl.classList.add('hidden');
+          container.innerHTML = '<p class="text-text-dark/50 text-sm italic py-10 text-center">Loading feedback…</p>';
+        }
+      }
+
+      function loadFeedback() {
+        if (useSupabase) {
+          var client = getSupabaseClient();
+          if (!client) {
+            renderFeedbackList(getFeedbackListLocal());
+            return;
+          }
+          setListLoading(true);
+          client.from('feedback').select('id, name, email, message, created_at').order('created_at', { ascending: false })
+            .then(function (result) {
+              setListLoading(false);
+              if (result.error) {
+                renderFeedbackList(getFeedbackListLocal());
+                return;
+              }
+              renderFeedbackList(result.data || []);
+            })
+            .catch(function () {
+              setListLoading(false);
+              renderFeedbackList(getFeedbackListLocal());
+            });
+        } else {
+          renderFeedbackList(getFeedbackListLocal());
+        }
       }
 
       const form = document.getElementById('feedback-form');
@@ -144,29 +201,69 @@
       if (form && formSection && thankYouSection) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
-          const name = (document.getElementById('feedback-name') || {}).value || '';
-          const email = (document.getElementById('feedback-email') || {}).value || '';
-          const message = (document.getElementById('feedback-message') || {}).value || '';
-          const nameTrim = name.trim();
-          const emailTrim = email.trim();
-          const messageTrim = message.trim();
+          var name = (document.getElementById('feedback-name') || {}).value || '';
+          var email = (document.getElementById('feedback-email') || {}).value || '';
+          var message = (document.getElementById('feedback-message') || {}).value || '';
+          var nameTrim = name.trim();
+          var emailTrim = email.trim();
+          var messageTrim = message.trim();
           if (!nameTrim || !emailTrim || !messageTrim) return;
-          const list = getFeedbackList();
-          list.push({
-            name: nameTrim,
-            email: emailTrim,
-            message: messageTrim,
-            date: new Date().toISOString()
-          });
-          saveFeedbackList(list);
+          var payload = { name: nameTrim, email: emailTrim, message: messageTrim };
+
+          if (useSupabase) {
+            var client = getSupabaseClient();
+            if (client) {
+              var submitBtn = form.querySelector('button[type="submit"]');
+              if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending…';
+              }
+              client.from('feedback').insert([payload])
+                .then(function (result) {
+                  if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send feedback';
+                  }
+                  if (result.error) {
+                    var list = getFeedbackListLocal();
+                    list.push({ name: nameTrim, email: emailTrim, message: messageTrim, date: new Date().toISOString() });
+                    saveFeedbackListLocal(list);
+                    renderFeedbackList(list);
+                  } else {
+                    loadFeedback();
+                  }
+                  form.reset();
+                  formSection.classList.add('hidden');
+                  thankYouSection.classList.remove('hidden');
+                })
+                .catch(function () {
+                  if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send feedback';
+                  }
+                  var list = getFeedbackListLocal();
+                  list.push({ name: nameTrim, email: emailTrim, message: messageTrim, date: new Date().toISOString() });
+                  saveFeedbackListLocal(list);
+                  form.reset();
+                  formSection.classList.add('hidden');
+                  thankYouSection.classList.remove('hidden');
+                  renderFeedbackList(list);
+                });
+              return;
+            }
+          }
+
+          var list = getFeedbackListLocal();
+          list.push({ name: nameTrim, email: emailTrim, message: messageTrim, date: new Date().toISOString() });
+          saveFeedbackListLocal(list);
           form.reset();
           formSection.classList.add('hidden');
           thankYouSection.classList.remove('hidden');
-          renderFeedbackList();
+          renderFeedbackList(list);
         });
       }
 
-      renderFeedbackList();
+      loadFeedback();
     });
   </script>
 </head>
@@ -238,6 +335,7 @@
           <h2 class="font-display text-2xl md:text-4xl tracking-widest uppercase text-text-dark mb-1">What people shared</h2>
           <div class="section-underline mb-6"></div>
           <p class="text-text-dark/60 text-sm max-w-xl mb-10">Thoughts and feelings left here, in their own words.</p>
+          <p id="feedback-local-notice" class="text-text-dark/50 text-sm italic py-4 text-center border border-white/10 rounded-lg mb-6 hidden">Feedback is stored on this device only. To show it to all visitors, add your Supabase URL and anon key in the page config (see FEEDBACK-SETUP.md).</p>
           <p id="feedback-list-empty" class="text-text-dark/50 text-sm italic py-10 text-center border border-dashed border-white/10 rounded-lg">No feedback yet. Be the first to share.</p>
           <div id="feedback-list" class="space-y-0"></div>
         </section>
