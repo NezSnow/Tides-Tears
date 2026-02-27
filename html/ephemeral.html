@@ -4,7 +4,7 @@
   <script>(function(){var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark');document.documentElement.classList.add('light');}})();</script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Support — Tides &amp; Tears</title>
+  <title>Ephemeral — Tides &amp; Tears</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,22 +37,66 @@
     html.light body{ background-color: #e5e7eb !important; color: #0f172a !important; }
     html.light .texture-bg{ background-image: none !important; background-color: #e5e7eb !important; }
     html.light .bg-background-dark,html.light [class*="bg-background"]{ background-color: #e5e7eb !important; background-image: none !important; }
-    html.light .text-text-dark{ color: #0f172a !important; }
-    html.light .text-text-dark\/90{ color: #111827 !important; }
+    html.light .text-text-dark,html.light .text-text-light{ color: #0f172a !important; }
+    html.light .text-text-dark\/90,html.light .text-text-light\/90{ color: #111827 !important; }
     html.light .text-text-dark\/80{ color: #1f2937 !important; }
-    html.light .text-text-dark\/75{ color: #374151 !important; }
-    html.light .text-text-dark\/70{ color: #4b5563 !important; }
-    html.light .text-text-dark\/60{ color: #64748b !important; }
+    html.light .text-text-dark\/70,html.light .text-text-dark\/60{ color: #4b5563 !important; }
     html.light .text-text-dark\/50{ color: #6b7280 !important; }
+    html.light .text-text-dark\/45{ color: #9ca3af !important; }
     html.light .text-text-dark\/40{ color: #9ca3af !important; }
     html.light .text-text-dark\/30{ color: #cbd5e1 !important; }
     html.light .border-white\/10,html.light [class*="border-white"]{ border-color: rgba(0,0,0,0.08) !important; }
     html.light nav{ background: #eaeff7 !important; }
+    html.light .bg-white\/5{ background-color: rgba(15,23,42,0.03) !important; }
+    html.light .bg-primary\/10{ background-color: rgba(200,75,49,0.1) !important; }
     html.light main,html.light section{ background-color: transparent !important; }
     html.light .grid-overlay{ opacity: 0.13 !important; }
-    html.light h1,html.light h2{ color: #0f172a !important; }
-    html.light .bg-white\/5{ background-color: rgba(15,23,42,0.03) !important; }
-    .section-underline { width: 4rem; height: 2px; background: linear-gradient(to right, #C84B31, transparent); margin-top: 0.75rem; }
+    html.light h1,html.light h2,html.light h3{ color: #0f172a !important; }
+
+    .story-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .story-meta {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+    .story-article {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      max-width: 65ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .story-article p {
+      margin-bottom: 1.4em;
+    }
+    .story-article .story-highlight {
+      background: rgba(200, 75, 49, 0.12);
+      border-left: 3px solid #C84B31;
+      padding: 0.6em 0 0.6em 1em;
+      margin: 1.2em 0;
+      font-style: italic;
+    }
+    .chapter-pill {
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.4);
+      color: rgba(148, 163, 184, 0.9);
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .chapter-pill:hover {
+      transform: translateY(-1px);
+    }
+    .chapter-pill-active {
+      border-color: rgba(200, 75, 49, 0.6);
+      background: rgba(200, 75, 49, 0.2);
+      color: #C84B31;
+    }
   </style>
 
   <script>
@@ -80,9 +124,9 @@
       AOS.init({ duration: 900, easing: "ease-out-cubic", once: true, offset: 60 });
     });
     document.addEventListener('DOMContentLoaded', function () {
-      const menuGroup = document.querySelector('.menu-group');
-      const menuButton = document.getElementById('menu-button');
-      const menuDropdown = document.getElementById('menu-dropdown');
+      var menuGroup = document.querySelector('.menu-group');
+      var menuButton = document.getElementById('menu-button');
+      var menuDropdown = document.getElementById('menu-dropdown');
       if (!menuGroup || !menuButton || !menuDropdown) return;
 
       function closeMenu() {
@@ -92,19 +136,16 @@
 
       menuButton.addEventListener('click', function (e) {
         e.stopPropagation();
-        const isOpen = menuGroup.classList.toggle('menu-open');
+        var isOpen = menuGroup.classList.toggle('menu-open');
         menuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
 
       menuDropdown.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
-          closeMenu();
-        });
+        link.addEventListener('click', function () { closeMenu(); });
       });
 
-      document.addEventListener('click', function () {
-        closeMenu();
-      });
+      document.addEventListener('click', function () { closeMenu(); });
+
       function applyTheme(isLight) {
         var html = document.documentElement;
         var sun = document.getElementById('theme-icon-sun');
@@ -120,6 +161,44 @@
       }
     });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var chapterLinks = document.querySelectorAll('[data-chapter-link]');
+      var chapterLabel = document.getElementById('chapter-label');
+      var chapterIds = ['chapter-1', 'chapter-2', 'chapter-3'];
+      var chapterSections = chapterIds.map(function (id) {
+        return document.getElementById(id);
+      }).filter(function (el) { return !!el; });
+
+      if (!chapterLinks.length || !chapterSections.length) return;
+
+      function showChapter(index) {
+        chapterSections.forEach(function (sec, i) {
+          if (!sec) return;
+          if (i === index) {
+            sec.classList.remove('hidden');
+          } else {
+            sec.classList.add('hidden');
+          }
+        });
+        chapterLinks.forEach(function (link, i) {
+          link.classList.toggle('chapter-pill-active', i === index);
+        });
+        if (chapterLabel) {
+          chapterLabel.textContent = 'Chapter ' + (index + 1);
+        }
+      }
+
+      showChapter(0);
+
+      chapterLinks.forEach(function (link, index) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          showChapter(index);
+        });
+      });
+    });
+  </script>
 </head>
 <body class="bg-background-dark text-text-dark font-sans transition-colors duration-300 overflow-x-hidden">
   <div class="relative min-h-screen w-full texture-bg flex flex-col">
@@ -129,12 +208,10 @@
     <div class="relative z-10 flex flex-col min-h-screen">
       <nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark">
         <a href="../index.html" class="font-bold hidden md:block opacity-80 hover:text-primary transition-colors">Tides &amp; Tears</a>
-
         <a href="../index.html#stories" class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:text-primary transition-colors">
           <span>All Stories</span>
           <span class="text-lg leading-none">+</span>
         </a>
-
         <button type="button" class="theme-btn mr-2" id="theme-toggle" aria-label="Toggle light or dark mode" title="Theme">
           <svg id="theme-icon-sun" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <svg id="theme-icon-moon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
@@ -152,48 +229,39 @@
         </div>
       </nav>
 
-      <main class="flex-grow w-full max-w-5xl mx-auto px-4 md:px-12 py-12 md:py-20">
-        <header class="mb-10 md:mb-14 text-center" data-aos="fade-down">
-          <p class="uppercase text-xs tracking-[0.35em] text-text-dark/60">Support</p>
-          <h1 class="font-display text-4xl md:text-6xl tracking-widest uppercase">Help This Story Travel</h1>
-          <div class="section-underline mx-auto"></div>
-          <p class="mt-4 text-text-dark/70 text-sm md:text-base max-w-2xl mx-auto">
-            Scan the code to support Neziah in sharing these stories with more people and continuing to grow this space.
+      <main class="flex-grow w-full max-w-3xl mx-auto px-4 md:px-0 py-12 md:py-16">
+        <header class="story-header mb-8 md:mb-10" data-aos="fade-down">
+          <p class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-3">Now</p>
+          <h1 class="story-title text-3xl md:text-5xl text-text-dark mb-4 pr-24">
+            Ephemeral
+          </h1>
+          <p class="story-meta text-text-dark/60">
+            Tides &amp; Tears • 4 min read (placeholder)
           </p>
         </header>
 
-        <section class="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-          <!-- Left: QR -->
-          <div class="md:col-span-5" data-aos="zoom-in">
-            <div class="relative rounded-2xl border border-primary/40 bg-primary/5 p-4 md:p-6 shadow-[0_0_40px_rgba(200,75,49,0.25)]">
-              <div class="absolute inset-0 rounded-2xl border border-primary/30 pointer-events-none"></div>
-              <img src="../QR.jpg" alt="Support QR code" class="w-full aspect-square object-contain rounded-lg bg-white/90 p-3" />
-            </div>
-            <p class="mt-3 text-xs uppercase tracking-[0.25em] text-text-dark/50 text-center md:text-left">
-              Scan with your phone camera
-            </p>
-          </div>
+        <figure class="mb-10" data-aos="fade-up">
+          <img src="../images/ETERNAL.jpg" alt="Eternal Sunshine of the Spotless Mind (2004) — illustration for Ephemeral" class="w-full rounded-2xl border border-white/10 shadow-2xl object-cover">
+          <figcaption class="mt-2 text-center text-xs text-text-dark/45 font-sans italic tracking-wide"><cite>Eternal Sunshine of the Spotless Mind</cite> (2004)</figcaption>
+        </figure>
 
-          <!-- Right: copy -->
-          <div class="md:col-span-7 space-y-5" data-aos="fade-left">
-            <p class="text-text-dark/75 text-sm md:text-base leading-relaxed">
-              <span class="text-primary font-semibold">Every scan is a small ripple.</span> It helps this personal archive of scars,
-              tides, and healing find the people who might need it most.
-            </p>
-            <p class="text-text-dark/70 text-sm md:text-base leading-relaxed">
-              Your support goes toward improving the experience, creating more honest pieces, and keeping this place alive —
-              quiet, real, and free to visit.
-            </p>
-            <p class="text-text-dark/60 text-xs md:text-sm uppercase tracking-[0.25em]">
-              This is just placeholder copy for now. We can refine the exact message later.
-            </p>
-          </div>
-        </section>
+        <p id="chapter-label" class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
+        <article class="story-article text-text-light/90" data-aos="fade-up" data-aos-delay="150">
+          <p id="chapter-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum sapien sit amet lorem aliquet, sit amet aliquam risus blandit. Fusce nec lectus vel libero posuere porta. Aenean vel sollicitudin ipsum, vitae aliquet nisl.</p>
+          <p id="chapter-2" class="story-highlight">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Suspendisse potenti. Donec ac massa quis velit viverra laoreet, eveniet aliquid ex ea commodi consequatur.</p>
+          <p id="chapter-3">Curabitur dictum, urna in interdum pellentesque, velit lorem bibendum justo, id pretium massa orci non lorem. Cras blandit bibendum nunc, vitae pretium odio volutpat ac. Sed laoreet, mauris non fermentum tincidunt, sapien arcu egestas dui, in finibus lorem urna non ipsum.</p>
+        </article>
 
-        <div class="mt-12 text-center">
-          <a href="../index.html" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-6 py-3 text-primary hover:bg-primary hover:text-background-dark transition-colors text-sm font-semibold tracking-widest">
-            ← Back to home
+        <div class="mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
+            ← Back to all stories
           </a>
+          <div class="flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
+            <span>Chapters</span>
+            <a href="#chapter-1" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill chapter-pill-active">1</a>
+            <a href="#chapter-2" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">2</a>
+            <a href="#chapter-3" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">3</a>
+          </div>
         </div>
       </main>
     </div>

@@ -34,17 +34,23 @@
     .theme-btn:hover { color: #C84B31; border-color: rgba(200,75,49,0.4); background: rgba(200,75,49,0.08); }
     html.light .theme-btn { border-color: rgba(0,0,0,0.12); color: #0f172a; }
     html.light .theme-btn:hover { color: #C84B31; }
-    html.light body{ background-color: #f1f5f9 !important; color: #0f172a !important; }
-    html.light .texture-bg{ background-image: none !important; background-color: #f1f5f9 !important; }
-    html.light .bg-background-dark,html.light [class*="bg-background"]{ background-color: #f1f5f9 !important; background-image: none !important; }
+    html.light body{ background-color: #e5e7eb !important; color: #0f172a !important; }
+    html.light .texture-bg{ background-image: none !important; background-color: #e5e7eb !important; }
+    html.light .bg-background-dark,html.light [class*="bg-background"]{ background-color: #e5e7eb !important; background-image: none !important; }
     html.light .text-text-dark,html.light .text-text-light{ color: #0f172a !important; }
-    html.light .text-text-dark\/60,html.light .text-text-light\/90{ color: #334155 !important; }
+    html.light .text-text-dark\/90,html.light .text-text-light\/90{ color: #111827 !important; }
+    html.light .text-text-dark\/80{ color: #1f2937 !important; }
+    html.light .text-text-dark\/70,html.light .text-text-dark\/60{ color: #4b5563 !important; }
+    html.light .text-text-dark\/50{ color: #6b7280 !important; }
+    html.light .text-text-dark\/45{ color: #9ca3af !important; }
+    html.light .text-text-dark\/40{ color: #9ca3af !important; }
+    html.light .text-text-dark\/30{ color: #cbd5e1 !important; }
     html.light .border-white\/10,html.light [class*="border-white"]{ border-color: rgba(0,0,0,0.08) !important; }
-    html.light nav{ background: rgba(241,245,249,0.98) !important; }
-    html.light .bg-white\/5{ background-color: rgba(0,0,0,0.04) !important; }
+    html.light nav{ background: #eaeff7 !important; }
+    html.light .bg-white\/5{ background-color: rgba(15,23,42,0.03) !important; }
     html.light .bg-primary\/10{ background-color: rgba(200,75,49,0.1) !important; }
     html.light main,html.light section{ background-color: transparent !important; }
-    html.light .grid-overlay{ opacity: 0.15 !important; }
+    html.light .grid-overlay{ opacity: 0.13 !important; }
     html.light h1,html.light h2,html.light h3{ color: #0f172a !important; }
     html.light .story-article .story-highlight{ background: rgba(200,75,49,0.1); }
 
@@ -78,6 +84,20 @@
       padding: 0.6em 0 0.6em 1em;
       margin: 1.2em 0;
       font-style: italic;
+    }
+    .chapter-pill {
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.4);
+      color: rgba(148, 163, 184, 0.9);
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .chapter-pill:hover {
+      transform: translateY(-1px);
+    }
+    .chapter-pill-active {
+      border-color: rgba(200, 75, 49, 0.6);
+      background: rgba(200, 75, 49, 0.2);
+      color: #C84B31;
     }
     .story-header { position: relative; }
     .volume-control-wrap {
@@ -257,6 +277,42 @@
           }
         });
       }
+      (function () {
+        var chapterLinks = document.querySelectorAll('[data-chapter-link]');
+        var chapterLabel = document.getElementById('chapter-label');
+        var chapterIds = ['chapter-1', 'chapter-2', 'chapter-3'];
+        var chapterSections = chapterIds.map(function (id) {
+          return document.getElementById(id);
+        }).filter(function (el) { return !!el; });
+
+        if (!chapterLinks.length || !chapterSections.length) return;
+
+        function showChapter(index) {
+          chapterSections.forEach(function (sec, i) {
+            if (!sec) return;
+            if (i === index) {
+              sec.classList.remove('hidden');
+            } else {
+              sec.classList.add('hidden');
+            }
+          });
+          chapterLinks.forEach(function (link, i) {
+            link.classList.toggle('chapter-pill-active', i === index);
+          });
+          if (chapterLabel) {
+            chapterLabel.textContent = 'Chapter ' + (index + 1);
+          }
+        }
+
+        showChapter(0);
+
+        chapterLinks.forEach(function (link, index) {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            showChapter(index);
+          });
+        });
+      })();
       function applyTheme(isLight) {
         var html = document.documentElement;
         var sun = document.getElementById('theme-icon-sun');
@@ -280,7 +336,7 @@
     <div class="absolute inset-0 grid-overlay z-0 opacity-20 border-l border-r border-white/10 mx-4 md:mx-12"></div>
 
     <div class="relative z-10 flex flex-col min-h-screen">
-      <nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark/95 backdrop-blur-sm">
+      <nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark">
         <a href="../index.html" class="font-bold hidden md:block opacity-80 hover:text-primary transition-colors">Tides &amp; Tears</a>
 
         <a href="../index.html#stories" class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:text-primary transition-colors">
@@ -295,7 +351,7 @@
         <div class="relative flex items-center space-x-6 menu-group" tabindex="0">
           <button type="button" class="uppercase text-xs tracking-[0.2em] hover:text-primary transition-colors focus:outline-none focus:text-primary" aria-haspopup="true" aria-expanded="false" aria-controls="menu-dropdown" id="menu-button">Menu</button>
           <div class="menu-dropdown absolute right-0 top-full pt-2 mt-1 min-w-[160px] z-30" id="menu-dropdown" role="menu" aria-orientation="vertical">
-            <div class="py-1 rounded border border-white/10 bg-background-dark/98 backdrop-blur-sm shadow-lg">
+            <div class="py-1 rounded border border-white/10 bg-background-dark shadow-lg">
               <a href="about.html" class="block w-full text-left px-4 py-2.5 hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">About</a>
               <a href="support.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Support</a>
               <a href="quotes.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Quotes</a>
@@ -338,18 +394,25 @@
           <figcaption class="mt-2 text-center text-xs text-text-dark/45 font-sans italic tracking-wide"><cite>500 Days of Summer</cite> (2009)</figcaption>
         </figure>
 
+        <p id="chapter-label" class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
         <article class="story-article text-text-light/90" data-aos="fade-up" data-aos-delay="150">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec mauris euismod, aliquet nulla at, hendrerit arcu. Vestibulum faucibus ligula sit amet eros ultrices, vitae tristique lectus volutpat. Integer non aliquet est. Donec bibendum, velit at auctor facilisis, justo nisi laoreet odio, non pharetra lorem ipsum id nunc.</p>
+          <p id="chapter-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec mauris euismod, aliquet nulla at, hendrerit arcu. Vestibulum faucibus ligula sit amet eros ultrices, vitae tristique lectus volutpat. Integer non aliquet est. Donec bibendum, velit at auctor facilisis, justo nisi laoreet odio, non pharetra lorem ipsum id nunc.</p>
           <p class="story-highlight">Curabitur ultrices vulputate justo sit amet faucibus. Praesent aliquam, ligula et dapibus gravida, lectus quam facilisis nisi, a luctus lectus arcu ac mi.</p>
-          <p>Nullam volutpat nisl non mi tempus, vitae pellentesque lectus sagittis. Pellentesque in faucibus neque, nec faucibus erat. Sed cursus diam ut ex vehicula, sit amet laoreet elit bibendum. Vestibulum luctus dignissim laoreet. Vivamus at augue maximus, dignissim tortor at, molestie neque. Integer eget fermentum sem, vel placerat erat.</p>
+          <p id="chapter-2">Nullam volutpat nisl non mi tempus, vitae pellentesque lectus sagittis. Pellentesque in faucibus neque, nec faucibus erat. Sed cursus diam ut ex vehicula, sit amet laoreet elit bibendum. Vestibulum luctus dignissim laoreet. Vivamus at augue maximus, dignissim tortor at, molestie neque. Integer eget fermentum sem, vel placerat erat.</p>
           <p class="story-highlight">Phasellus urna ex, sodales vitae arcu in, pretium viverra ipsum. Cras sit amet pretium ipsum. Quisque vitae sapien odio.</p>
-          <p>Sed vitae lacus at velit luctus ullamcorper. Vestibulum a scelerisque mi. Nulla hendrerit condimentum quos. Pellentesque sit amet odio at ipsum iaculis fermentum. Etiam nec cursus nibh. Cras at odio in nibh ultricies fermentum sit amet non mauris.</p>
+          <p id="chapter-3">Sed vitae lacus at velit luctus ullamcorper. Vestibulum a scelerisque mi. Nulla hendrerit condimentum quos. Pellentesque sit amet odio at ipsum iaculis fermentum. Etiam nec cursus nibh. Cras at odio in nibh ultricies fermentum sit amet non mauris.</p>
         </article>
 
-        <div class="mt-10 flex items-center justify-between gap-4">
-          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-6 py-3 text-primary hover:bg-primary hover:text-background-dark transition-colors text-xs md:text-sm font-semibold tracking-[0.3em] uppercase">
+        <div class="mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
             ← Back to all stories
           </a>
+          <div class="flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
+            <span>Chapters</span>
+            <a href="#chapter-1" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill chapter-pill-active">1</a>
+            <a href="#chapter-2" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">2</a>
+            <a href="#chapter-3" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">3</a>
+          </div>
         </div>
       </main>
     </div>

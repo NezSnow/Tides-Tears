@@ -35,17 +35,20 @@
     .theme-btn:hover { color: #C84B31; border-color: rgba(200,75,49,0.4); background: rgba(200,75,49,0.08); }
     html.light .theme-btn { border-color: rgba(0,0,0,0.12); color: #0f172a; }
     html.light .theme-btn:hover { color: #C84B31; }
-    html.light body{ background-color: #f1f5f9 !important; color: #0f172a !important; }
-    html.light .texture-bg{ background-image: none !important; background-color: #f1f5f9 !important; }
-    html.light .bg-background-dark,html.light [class*="bg-background"]{ background-color: #f1f5f9 !important; background-image: none !important; }
+    html.light body{ background-color: #e5e7eb !important; color: #0f172a !important; }
+    html.light .texture-bg{ background-image: none !important; background-color: #e5e7eb !important; }
+    html.light .bg-background-dark,html.light [class*="bg-background"]{ background-color: #e5e7eb !important; background-image: none !important; }
     html.light .text-text-dark{ color: #0f172a !important; }
     html.light .text-text-dark\/60{ color: #64748b !important; }
+    html.light .text-text-dark\/50{ color: #6b7280 !important; }
+    html.light .text-text-dark\/40{ color: #9ca3af !important; }
+    html.light .text-text-dark\/90{ color: #111827 !important; }
     html.light .border-white\/10,html.light [class*="border-white"]{ border-color: rgba(0,0,0,0.08) !important; }
-    html.light nav{ background: rgba(241,245,249,0.98) !important; }
+    html.light nav{ background: #eaeff7 !important; }
     html.light main,html.light section{ background-color: transparent !important; }
-    html.light .grid-overlay{ opacity: 0.15 !important; }
+    html.light .grid-overlay{ opacity: 0.13 !important; }
     html.light h1,html.light h2{ color: #0f172a !important; }
-    html.light .bg-white\/5{ background-color: rgba(0,0,0,0.04) !important; }
+    html.light .bg-white\/5{ background-color: rgba(15,23,42,0.03) !important; }
     .section-underline { width: 4rem; height: 2px; background: linear-gradient(to right, #C84B31, transparent); margin-top: 0.75rem; }
     .quote-pill-active { background-color: rgba(200,75,49,0.15); color: #F9FAFB; border-color: rgba(200,75,49,0.5); }
   </style>
@@ -178,8 +181,8 @@
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         modalText.textContent = '“' + quote.text + '”';
-        // reset to default color
-        modalCard.style.background = 'linear-gradient(135deg, #020617, #111827)';
+        // reset to a gentle, low-contrast default color
+        modalCard.style.background = 'linear-gradient(135deg, #020617, #1e293b)';
       }
 
       function closeQuoteModal() {
@@ -199,13 +202,17 @@
           const color = btn.getAttribute('data-bg-color');
           if (!modalCard) return;
           if (color === 'midnight') {
-            modalCard.style.background = 'linear-gradient(135deg, #020617, #111827)';
+            // deep navy, easy on the eyes
+            modalCard.style.background = 'linear-gradient(135deg, #020617, #1e293b)';
           } else if (color === 'ember') {
-            modalCard.style.background = 'linear-gradient(135deg, #1f2933, #C84B31)';
+            // warm but softer amber/orange
+            modalCard.style.background = 'linear-gradient(135deg, #111827, #b45309)';
           } else if (color === 'dawn') {
-            modalCard.style.background = 'linear-gradient(135deg, #111827, #EC4899)';
+            // muted rose instead of harsh pink
+            modalCard.style.background = 'linear-gradient(135deg, #111827, #fb7185)';
           } else if (color === 'seafoam') {
-            modalCard.style.background = 'linear-gradient(135deg, #022c22, #14b8a6)';
+            // gentle teal/green
+            modalCard.style.background = 'linear-gradient(135deg, #022c22, #34d399)';
           }
         });
       });
@@ -287,7 +294,7 @@
     <div class="absolute inset-0 grid-overlay z-0 opacity-20 border-l border-r border-white/10 mx-4 md:mx-12"></div>
 
     <div class="relative z-10 flex flex-col min-h-screen">
-      <nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark/95 backdrop-blur-sm">
+      <nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark">
         <a href="../index.html" class="font-bold hidden md:block opacity-80 hover:text-primary transition-colors">Tides &amp; Tears</a>
 
         <a href="../index.html#stories" class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:text-primary transition-colors">
@@ -302,7 +309,7 @@
         <div class="relative flex items-center space-x-6 menu-group" tabindex="0">
           <button type="button" class="uppercase text-xs tracking-[0.2em] hover:text-primary transition-colors focus:outline-none focus:text-primary" aria-haspopup="true" aria-expanded="false" aria-controls="menu-dropdown" id="menu-button">Menu</button>
           <div class="menu-dropdown absolute right-0 top-full pt-2 mt-1 min-w-[160px] z-30" id="menu-dropdown" role="menu" aria-orientation="vertical">
-            <div class="py-1 rounded border border-white/10 bg-background-dark/98 backdrop-blur-sm shadow-lg">
+            <div class="py-1 rounded border border-white/10 bg-background-dark shadow-lg">
               <a href="about.html" class="block w-full text-left px-4 py-2.5 hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">About</a>
               <a href="support.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Support</a>
               <a href="quotes.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Quotes</a>
@@ -358,7 +365,7 @@
       </div>
       <div id="quote-share-card" class="rounded-2xl px-6 py-8 md:px-8 md:py-10 border border-white/10 shadow-2xl bg-gradient-to-br from-background-dark to-slate-900 text-text-light text-center flex flex-col overflow-visible min-h-[180px]">
         <p id="quote-share-text" class="font-display text-xl md:text-3xl leading-relaxed italic flex-grow">Quote text</p>
-        <p class="quote-watermark text-xs uppercase tracking-[0.3em] text-white/90 mt-4 pt-4 border-t border-white/20 shrink-0 font-medium">Tides &amp; Tears</p>
+        <p class="quote-watermark text-[10px] uppercase tracking-[0.18em] text-white/65 mt-3 pt-3 border-t border-white/10 shrink-0 font-medium">Tides &amp; Tears</p>
       </div>
       <div class="mt-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shrink-0">
         <div class="flex items-center justify-center gap-2 text-xs uppercase tracking-[0.25em] text-text-dark/60 flex-nowrap pb-1 min-w-0">

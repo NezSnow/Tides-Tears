@@ -50,21 +50,22 @@
     .theme-btn:hover { color: #C84B31; border-color: rgba(200,75,49,0.4); background: rgba(200,75,49,0.08); }
     html.light .theme-btn { border-color: rgba(0,0,0,0.12); color: #0f172a; }
     html.light .theme-btn:hover { color: #C84B31; }
-    html.light body { background-color: #f1f5f9 !important; color: #0f172a !important; }
-    html.light .texture-bg { background-image: none !important; background-color: #f1f5f9 !important; }
+    html.light body { background-color: #e5e7eb !important; color: #0f172a !important; }
+    html.light .texture-bg { background-image: none !important; background-color: #e5e7eb !important; }
     html.light .bg-background-dark,
     html.light .bg-background-light,
-    html.light [class*="bg-background"] { background-color: #f1f5f9 !important; background-image: none !important; }
-    html.light .absolute.inset-0.z-0 { background-color: rgba(241,245,249,0.5) !important; mix-blend-mode: normal !important; }
+    html.light [class*="bg-background"] { background-color: #e5e7eb !important; background-image: none !important; }
+    html.light .absolute.inset-0.z-0 { background-color: rgba(226,232,240,0.6) !important; mix-blend-mode: normal !important; }
     html.light .text-text-dark,
     html.light .text-text-light { color: #0f172a !important; }
     html.light .border-white\/10,
     html.light [class*="border-white"] { border-color: rgba(0,0,0,0.08) !important; }
-    html.light nav { background: rgba(241,245,249,0.98) !important; }
+    html.light nav { background: #eaeff7 !important; }
     html.light .bg-black\/40 { background-color: rgba(0,0,0,0.06) !important; }
     html.light .text-text-dark\/70 { color: #334155 !important; }
     html.light .text-text-dark\/60 { color: #64748b !important; }
-    html.light .text-text-dark\/50 { color: #94a3b8 !important; }
+    html.light .text-text-dark\/50 { color: #6b7280 !important; }
+    html.light .text-text-dark\/90 { color: #111827 !important; }
     html.light .text-text-dark\/80 { color: #1e293b !important; }
     html.light .text-text-dark\/30 { color: #cbd5e1 !important; }
     html.light .bg-white\/5 { background-color: rgba(0,0,0,0.04) !important; }
@@ -173,7 +174,7 @@
 <div class="absolute inset-0 bg-background-light/90 dark:bg-background-dark/80 mix-blend-multiply dark:mix-blend-normal z-0"></div>
 <div class="absolute inset-0 grid-overlay z-0 opacity-30 dark:opacity-20 border-l border-r border-white/10 mx-4 md:mx-12"></div>
 <div class="relative z-10 flex flex-col">
-<nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark/95 backdrop-blur-sm">
+<nav class="sticky top-0 z-20 w-full flex justify-between items-center py-6 px-6 md:px-12 border-b border-white/10 uppercase text-xs tracking-[0.2em] bg-background-dark">
 <a href="index.html" class="font-bold hidden md:block opacity-80 hover:text-primary transition-colors">
                    Tides &amp; Tears
                 </a>
@@ -188,7 +189,7 @@
 <div class="relative flex items-center space-x-6 menu-group" tabindex="0">
 <button type="button" class="uppercase text-xs tracking-[0.2em] hover:text-primary transition-colors focus:outline-none focus:text-primary" aria-haspopup="true" aria-expanded="false" aria-controls="menu-dropdown" id="menu-button">Menu</button>
 <div class="menu-dropdown absolute right-0 top-full pt-2 mt-1 min-w-[140px] z-30" id="menu-dropdown" role="menu" aria-orientation="vertical">
-<div class="py-1 rounded border border-white/10 bg-background-dark/98 backdrop-blur-sm shadow-lg">
+<div class="py-1 rounded border border-white/10 bg-background-dark shadow-lg">
 <a href="html/about.html" class="block w-full text-left px-4 py-2.5 hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">About</a>
 <a href="html/support.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Support</a>
 <a href="html/quotes.html" class="block px-4 py-2.5 text-left hover:bg-white/5 hover:text-primary transition-colors" role="menuitem">Quotes</a>
@@ -200,7 +201,7 @@
 <main class="flex-grow flex flex-col">
 <section class="min-h-screen flex flex-col items-center justify-center relative px-4" id="hero">
 <div class="relative z-20 text-center space-y-2 md:space-y-4 select-none mt-10 md:mt-0">
-<h1 class="font-display text-5xl md:text-8xl lg:text-9xl tracking-widest uppercase text-text-light dark:text-text-dark drop-shadow-lg mix-blend-difference dark:mix-blend-normal">
+<h1 class="font-display text-5xl md:text-8xl lg:text-9xl tracking-widest uppercase text-text-light dark:text-text-dark drop-shadow-lg">
 <span class="block" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">Tides</span>
 <span class="block italic font-light lowercase text-4xl md:text-7xl lg:text-8xl my-2 md:my-4 font-serif text-primary opacity-90" data-aos="fade-up" data-aos-duration="700" data-aos-delay="300">&amp;</span>
 <span class="block" data-aos="fade-up" data-aos-duration="700" data-aos-delay="500">Tears</span>
@@ -255,19 +256,21 @@
 <article class="relative md:flex md:flex-row md:items-center md:gap-12 mb-16 md:mb-24 md:odd:flex-row-reverse" data-aos="fade-right" data-aos-duration="800" data-aos-delay="100">
 <div class="md:w-5/12 md:pl-8 md:odd:pl-0 md:odd:pr-8">
 <span class="inline-block px-3 py-1 rounded-full text-xs uppercase tracking-wider bg-primary/20 text-primary mb-3">Now</span>
-<h3 class="font-display text-xl md:text-2xl font-semibold text-text-dark mb-2">Ephemeral</h3>
-<p class="text-text-dark/70 text-sm md:text-base leading-relaxed">Still here. Still writing. This story isn't finished—it's alive, like a heartbeat on a screen.</p>
+<a href="html/ephemeral.html" class="group inline-block">
+<h3 class="font-display text-xl md:text-2xl font-semibold text-text-dark mb-2 group-hover:text-primary transition-colors">Ephemeral</h3>
+</a>
+<p class="text-text-dark/70 text-sm md:text-base leading-relaxed">A placeholder entry — for now, this story lives in lorem ipsum.</p>
 </div>
-<div class="mt-4 md:mt-0 md:w-5/12 aspect-[4/3] rounded-lg bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="250">
+<a href="html/ephemeral.html" class="mt-4 md:mt-0 md:w-5/12 aspect-[4/3] rounded-lg bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center hover:border-primary/60 hover:shadow-xl transition duration-300" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="250" aria-label="Read Ephemeral">
 <img src="images/ETERNAL.jpg" alt="Eternal Sunshine of the Spotless Mind (2004) — Illustration for Ephemeral" class="w-full h-full object-cover">
-</div>
+</a>
 </article>
 </div>
 </section>
 <footer class="w-full py-8 px-6 md:px-12 border-t border-white/10 flex justify-between items-end text-xs uppercase tracking-[0.2em] opacity-60">
 <div class="space-x-8 hidden md:flex">
-<a class="hover:text-primary transition-colors" href="html/about.html">1 — About</a>
-<a class="hover:text-primary transition-colors" href="index.html#stories">2 — Journal</a>
+<a class="hover:text-primary transition-colors" href="html/about.html">About</a>
+<a class="hover:text-primary transition-colors" href="html/support.html">Support</a>
 </div>
 <div class="flex-grow flex justify-center items-center min-h-[60px]" data-aos="fade-in" data-aos-duration="1000" data-aos-delay="150" data-aos-offset="80" data-aos-easing="ease-out">
 <div class="flex flex-col items-center gap-2 overflow-hidden">
@@ -282,12 +285,14 @@
 </div>
 </div>
 <div class="space-x-8 hidden md:flex text-right">
-<a class="hover:text-primary transition-colors" href="#">3 — Contact</a>
+<a class="hover:text-primary transition-colors" href="html/quotes.html">Quotes</a>
+<a class="hover:text-primary transition-colors" href="html/feedback.html">Feedback</a>
 </div>
 <div class="flex w-full justify-between md:hidden absolute bottom-8 left-0 px-8">
 <a class="hover:text-primary" href="html/about.html">About</a>
-<a class="hover:text-primary" href="index.html#stories">Story</a>
-<a class="hover:text-primary" href="#">Contact</a>
+<a class="hover:text-primary" href="html/support.html">Support</a>
+<a class="hover:text-primary" href="html/quotes.html">Quotes</a>
+<a class="hover:text-primary" href="html/feedback.html">Feedback</a>
 </div>
 </footer>
 </div>
