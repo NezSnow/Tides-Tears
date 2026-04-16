@@ -98,6 +98,19 @@
       background: rgba(200, 75, 49, 0.2);
       color: #C84B31;
     }
+    .chapter-label {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .chapter-label.typing {
+      border-right: 1px solid rgba(200, 75, 49, 0.75);
+      padding-right: 0.35em;
+      animation: caretBlink 850ms step-end infinite;
+    }
+    @keyframes caretBlink {
+      0%, 49% { border-right-color: rgba(200, 75, 49, 0.75); }
+      50%, 100% { border-right-color: transparent; }
+    }
     .story-header { position: relative; }
     .volume-control-wrap {
       position: absolute;
@@ -235,15 +248,22 @@
       var bgm = document.getElementById('story-bgm');
       if (bgm) {
         var played = false;
-        function tryPlay() {
+        function tryPlay(retries) {
           if (played) return;
           var p = bgm.play();
-          if (p && typeof p.then === 'function') p.then(function () { played = true; }).catch(function () {});
-          else played = true;
+          if (p && typeof p.then === 'function') {
+            p.then(function () { played = true; }).catch(function () {
+              if (retries > 0) setTimeout(function () { tryPlay(retries - 1); }, 250);
+            });
+          } else {
+            played = true;
+          }
         }
-        tryPlay();
-        document.addEventListener('click', tryPlay, { once: true });
-        document.addEventListener('touchstart', tryPlay, { once: true });
+        var fromNav = sessionStorage.getItem('tt_play') === '1';
+        sessionStorage.removeItem('tt_play');
+        tryPlay(fromNav ? 8 : 0);
+        document.addEventListener('click', function () { tryPlay(0); });
+        document.addEventListener('touchstart', function () { tryPlay(0); });
       }
 
       var volumeWrap = document.getElementById('volume-control-wrap');
@@ -281,7 +301,25 @@
 
         if (!chapterLinks.length || !chapterSections.length) return;
 
-        function showChapter(index) {
+        var typeTimer = null;
+        function typeLabel(text) {
+          if (!chapterLabel) return;
+          if (typeTimer) window.clearInterval(typeTimer);
+          chapterLabel.classList.add('typing');
+          chapterLabel.textContent = '';
+          var i = 0;
+          typeTimer = window.setInterval(function () {
+            chapterLabel.textContent = text.slice(0, i + 1);
+            i += 1;
+            if (i >= text.length) {
+              window.clearInterval(typeTimer);
+              typeTimer = null;
+              chapterLabel.classList.remove('typing');
+            }
+          }, 40);
+        }
+
+        function showChapter(index, shouldScroll) {
           chapterSections.forEach(function (sec, i) {
             if (!sec) return;
             if (i === index) {
@@ -293,17 +331,20 @@
           chapterLinks.forEach(function (link, i) {
             link.classList.toggle('chapter-pill-active', i === index);
           });
-          if (chapterLabel) {
-            chapterLabel.textContent = 'Chapter ' + (index + 1);
+          typeLabel('Chapter ' + (index + 1));
+          if (shouldScroll && chapterSections[index]) {
+            var targetRect = chapterSections[index].getBoundingClientRect();
+            var offset = window.pageYOffset + targetRect.top - 140;
+            window.scrollTo({ top: offset < 0 ? 0 : offset, behavior: 'smooth' });
           }
         }
 
-        showChapter(0);
+        showChapter(0, false);
 
         chapterLinks.forEach(function (link, index) {
           link.addEventListener('click', function (e) {
             e.preventDefault();
-            showChapter(index);
+            showChapter(index, true);
           });
         });
       })();
@@ -372,7 +413,7 @@
               </svg>
             </button>
           </div>
-          <p class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-3">The middle</p>
+          <p class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-3">January 31, 2026</p>
           <h1 class="story-title text-3xl md:text-5xl text-text-dark mb-4 pr-24">
             Bawat Kapit at Alis Mo.
           </h1>
@@ -386,23 +427,56 @@
           <figcaption class="mt-2 text-center text-xs text-text-dark/45 font-sans italic tracking-wide"><cite>Materialists</cite> (2025)</figcaption>
         </figure>
 
-        <p id="chapter-label" class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
+        <p id="chapter-label" class="chapter-label text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
         <article class="story-article text-text-light/90" data-aos="fade-up" data-aos-delay="150">
-          <p id="chapter-1">Moments of doubt, clarity, and small victories. The in-between that shapes who we become.</p>
-          <p id="chapter-2" class="story-highlight">Here is where the story continues—placeholder for your words. Replace this with your own turning points, the tides that pulled you one way and then another.</p>
-          <p id="chapter-3">Still writing. Still here.</p>
+          <div id="chapter-1">
+            <p>Moments of doubt, clarity, and small victories. The in-between that shapes who we become.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tincidunt, nisl sit amet venenatis iaculis, lacus leo ullamcorper lorem, in pharetra enim risus non justo.</p>
+            <p>Curabitur gravida, lacus ut porttitor dignissim, lacus odio rhoncus lacus, id tempor arcu tortor ac lorem. Integer rhoncus interdum nunc, at molestie sapien interdum ac.</p>
+            <p>Donec lacinia, ipsum in eleifend gravida, lectus lacus tincidunt elit, non tristique augue est sit amet neque. Mauris hendrerit posuere ex, in tincidunt sapien eleifend a.</p>
+            <p>Morbi at facilisis est. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Maecenas vel nibh ut libero lacinia facilisis.</p>
+            <p>Phasellus gravida lorem sed nisl interdum, vitae consequat arcu semper. Integer at justo feugiat, dignissim risus non, posuere metus.</p>
+            <p>Vivamus vitae consequat erat. Maecenas et cursus velit. Nulla dictum purus et turpis consequat, a feugiat lacus placerat.</p>
+            <p>Nunc aliquet, risus at varius eleifend, arcu mi rhoncus ex, et tristique velit lorem nec velit. Aliquam volutpat euismod felis, a dictum orci.</p>
+            <p>Etiam feugiat sapien turpis, eget aliquet urna fermentum id. Maecenas in lacus ex. Duis ac neque et nunc efficitur vulputate.</p>
+            <p>Proin nec orci eu urna aliquet placerat. Donec vitae interdum turpis, sed porttitor nulla.</p>
+          </div>
+          <div id="chapter-2">
+            <p class="story-highlight">Here is where the story continues—placeholder for your words. Replace this with your own turning points, the tides that pulled you one way and then another.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra, augue sit amet egestas placerat, justo arcu feugiat lacus, in congue purus urna id nunc.</p>
+            <p>Vestibulum tempus, diam in luctus scelerisque, orci lacus vehicula sem, quis suscipit justo eros vitae nulla. Suspendisse nec nulla ac tortor finibus dignissim.</p>
+            <p>Integer auctor lectus at lacus elementum, at efficitur urna dapibus. Morbi accumsan sollicitudin felis, sit amet interdum lorem molestie id.</p>
+            <p>Sed non ipsum sed lacus ultricies cursus. In hac habitasse platea dictumst. In viverra purus at enim fermentum bibendum.</p>
+            <p>Nulla vitae ipsum nec neque suscipit tempus. Integer quis luctus mi, in finibus nibh. Donec consequat orci ac neque consequat, a faucibus mi gravida.</p>
+            <p>Cras dictum lectus in justo accumsan, non placerat nibh ultrices. Sed ac aliquet magna, eu imperdiet mi.</p>
+            <p>Aliquam erat volutpat. Cras mollis efficitur consequat. Donec tempor metus et eros interdum, in sodales eros gravida.</p>
+            <p>Nam eu lacinia lectus. Sed eleifend, erat id rhoncus vehicula, ipsum tortor dapibus nulla, sit amet ornare lectus lectus sit amet orci.</p>
+            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+          </div>
+          <div id="chapter-3">
+            <p>Still writing. Still here.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras fermentum eu tortor at vestibulum. Mauris ullamcorper porta mi, vel dignissim velit posuere id.</p>
+            <p>Integer blandit mi at ligula interdum, sit amet pulvinar purus gravida. Phasellus tempor libero at diam dignissim, a consectetur metus bibendum.</p>
+            <p>Morbi venenatis arcu mi, ac elementum est blandit sit amet. Aenean elementum velit sed tortor congue pulvinar.</p>
+            <p>Vivamus et malesuada diam. Nulla suscipit justo nec massa ullamcorper, vitae sollicitudin velit posuere.</p>
+            <p>Aenean sagittis nisi vitae velit sollicitudin, vitae placerat velit fermentum. Donec molestie justo sit amet leo convallis, vitae porta enim tempor.</p>
+            <p>Curabitur sit amet vehicula nisi. Cras nisi magna, rhoncus vel sapien non, blandit imperdiet lectus.</p>
+            <p>Quisque venenatis imperdiet lectus, quis ornare lorem congue at. Integer in lorem in mauris tempus faucibus.</p>
+            <p>Ut non hendrerit arcu. Maecenas venenatis elit at quam volutpat aliquet. Suspendisse potenti.</p>
+            <p>Phasellus porttitor mattis dui, sed viverra arcu. Suspendisse hendrerit lorem at leo consequat aliquet.</p>
+          </div>
         </article>
 
-        <div class="mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
-            ← Back to all stories
-          </a>
-          <div class="flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
+        <div class="mt-10 flex flex-col items-start md:flex-row md:items-center md:justify-between gap-4">
+          <div class="order-1 md:order-2 flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
             <span>Chapters</span>
             <a href="#chapter-1" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill chapter-pill-active">1</a>
             <a href="#chapter-2" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">2</a>
             <a href="#chapter-3" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">3</a>
           </div>
+          <a href="../index.html#stories" class="order-2 md:order-1 w-fit self-start inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
+            ← Back to all stories
+          </a>
         </div>
       </main>
     </div>

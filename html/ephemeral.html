@@ -97,6 +97,19 @@
       background: rgba(200, 75, 49, 0.2);
       color: #C84B31;
     }
+    .chapter-label {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .chapter-label.typing {
+      border-right: 1px solid rgba(200, 75, 49, 0.75);
+      padding-right: 0.35em;
+      animation: caretBlink 850ms step-end infinite;
+    }
+    @keyframes caretBlink {
+      0%, 49% { border-right-color: rgba(200, 75, 49, 0.75); }
+      50%, 100% { border-right-color: transparent; }
+    }
   </style>
 
   <script>
@@ -172,7 +185,25 @@
 
       if (!chapterLinks.length || !chapterSections.length) return;
 
-      function showChapter(index) {
+      var typeTimer = null;
+      function typeLabel(text) {
+        if (!chapterLabel) return;
+        if (typeTimer) window.clearInterval(typeTimer);
+        chapterLabel.classList.add('typing');
+        chapterLabel.textContent = '';
+        var i = 0;
+        typeTimer = window.setInterval(function () {
+          chapterLabel.textContent = text.slice(0, i + 1);
+          i += 1;
+          if (i >= text.length) {
+            window.clearInterval(typeTimer);
+            typeTimer = null;
+            chapterLabel.classList.remove('typing');
+          }
+        }, 40);
+      }
+
+      function showChapter(index, shouldScroll) {
         chapterSections.forEach(function (sec, i) {
           if (!sec) return;
           if (i === index) {
@@ -184,17 +215,20 @@
         chapterLinks.forEach(function (link, i) {
           link.classList.toggle('chapter-pill-active', i === index);
         });
-        if (chapterLabel) {
-          chapterLabel.textContent = 'Chapter ' + (index + 1);
+        typeLabel('Chapter ' + (index + 1));
+        if (shouldScroll && chapterSections[index]) {
+          var targetRect = chapterSections[index].getBoundingClientRect();
+          var offset = window.pageYOffset + targetRect.top - 140;
+          window.scrollTo({ top: offset < 0 ? 0 : offset, behavior: 'smooth' });
         }
       }
 
-      showChapter(0);
+      showChapter(0, false);
 
       chapterLinks.forEach(function (link, index) {
         link.addEventListener('click', function (e) {
-          e.preventDefault();
-          showChapter(index);
+        e.preventDefault();
+        showChapter(index, true);
         });
       });
     });
@@ -245,23 +279,56 @@
           <figcaption class="mt-2 text-center text-xs text-text-dark/45 font-sans italic tracking-wide"><cite>Eternal Sunshine of the Spotless Mind</cite> (2004)</figcaption>
         </figure>
 
-        <p id="chapter-label" class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
+        <p id="chapter-label" class="chapter-label text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
         <article class="story-article text-text-light/90" data-aos="fade-up" data-aos-delay="150">
-          <p id="chapter-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum sapien sit amet lorem aliquet, sit amet aliquam risus blandit. Fusce nec lectus vel libero posuere porta. Aenean vel sollicitudin ipsum, vitae aliquet nisl.</p>
-          <p id="chapter-2" class="story-highlight">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Suspendisse potenti. Donec ac massa quis velit viverra laoreet, eveniet aliquid ex ea commodi consequatur.</p>
-          <p id="chapter-3">Curabitur dictum, urna in interdum pellentesque, velit lorem bibendum justo, id pretium massa orci non lorem. Cras blandit bibendum nunc, vitae pretium odio volutpat ac. Sed laoreet, mauris non fermentum tincidunt, sapien arcu egestas dui, in finibus lorem urna non ipsum.</p>
+          <div id="chapter-1">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum sapien sit amet lorem aliquet, sit amet aliquam risus blandit. Fusce nec lectus vel libero posuere porta. Aenean vel sollicitudin ipsum, vitae aliquet nisl.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sagittis viverra porta. Maecenas sit amet orci augue. Curabitur pretium lacinia fringilla.</p>
+            <p>Donec id arcu semper, consequat leo ac, gravida justo. Integer augue dui, volutpat ac molestie ac, faucibus at quam.</p>
+            <p>Nam sodales maximus est, ut venenatis risus ultrices in. Vestibulum ultricies urna in risus tempor aliquam. Maecenas luctus, nunc ac placerat euismod, est nunc auctor mauris, non dictum risus ante in justo.</p>
+            <p>Proin molestie bibendum neque, vitae congue lorem dictum quis. Donec egestas urna ac arcu finibus rhoncus.</p>
+            <p>Nunc non dignissim erat. Duis iaculis aliquet justo, ac suscipit augue aliquet non. Quisque consequat, eros maximus ultricies iaculis, est magna dapibus eros, ut lacinia massa lorem in turpis.</p>
+            <p>Sed pretium lacinia eros, in congue ex placerat eget. Integer porttitor est vitae nisl sollicitudin ultricies.</p>
+            <p>Praesent non imperdiet quam. Sed dignissim metus convallis erat posuere, vitae volutpat urna consectetur.</p>
+            <p>Morbi rutrum erat libero, vitae pharetra dui euismod at. Sed vulputate tellus ac suscipit lacinia.</p>
+            <p>Etiam bibendum, arcu sed porta lacinia, metus lacus consectetur magna, non tincidunt nisl felis a elit.</p>
+          </div>
+          <div id="chapter-2">
+            <p class="story-highlight">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Suspendisse potenti. Donec ac massa quis velit viverra laoreet, eveniet aliquid ex ea commodi consequatur.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse dignissim lectus in nisi sodales, id fermentum nisl faucibus.</p>
+            <p>Aliquam erat volutpat. Integer ac tristique nisl. Curabitur a aliquam velit, in bibendum dui.</p>
+            <p>Etiam purus metus, semper non vulputate in, lobortis eget justo. Aenean in est vitae odio scelerisque ullamcorper a sit amet neque.</p>
+            <p>Curabitur rhoncus congue ante, ac egestas libero faucibus ut. Integer mollis ac lectus ac interdum.</p>
+            <p>Nam nec arcu eu urna pulvinar rhoncus. Pellentesque feugiat dolor felis, id suscipit nunc condimentum sit amet.</p>
+            <p>Sed porttitor turpis vitae augue gravida, non consequat mi efficitur. Mauris nec nibh a felis dapibus iaculis at nec est.</p>
+            <p>Morbi varius gravida metus, eget tristique arcu interdum sed. Vestibulum suscipit justo quis porttitor pulvinar.</p>
+            <p>Integer in consequat massa. Etiam porta luctus lobortis. Nam vel pellentesque justo.</p>
+            <p>Sed venenatis, arcu nec feugiat interdum, dui justo sodales ipsum, et finibus purus lectus vitae est.</p>
+          </div>
+          <div id="chapter-3">
+            <p>Curabitur dictum, urna in interdum pellentesque, velit lorem bibendum justo, id pretium massa orci non lorem. Cras blandit bibendum nunc, vitae pretium odio volutpat ac. Sed laoreet, mauris non fermentum tincidunt, sapien arcu egestas dui, in finibus lorem urna non ipsum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam faucibus scelerisque finibus. In hac habitasse platea dictumst.</p>
+            <p>Nullam vel neque purus. Ut dapibus dui eget est porta, vitae viverra massa feugiat. Donec tempus, est quis euismod ultricies, sapien lectus porttitor arcu, id volutpat nunc lectus eget augue.</p>
+            <p>Maecenas viverra orci et orci cursus lacinia. Sed nec nulla sit amet est condimentum consequat.</p>
+            <p>Vestibulum ac purus at turpis luctus vulputate. Integer aliquet dolor mi, sed sollicitudin justo sollicitudin ac.</p>
+            <p>In sed sapien non neque sodales fermentum. Donec venenatis urna nec mi auctor, eget feugiat felis molestie.</p>
+            <p>Integer volutpat ante eget eros fringilla gravida. Sed dictum lorem luctus ex sodales iaculis.</p>
+            <p>Aliquam eget felis nec libero pellentesque facilisis. Donec vestibulum est lacus, in condimentum lorem maximus vitae.</p>
+            <p>Etiam at eros nisl. Vivamus sit amet efficitur augue, nec pharetra odio.</p>
+            <p>Nam id urna quis tortor convallis aliquam. Sed a lectus at ligula egestas malesuada.</p>
+          </div>
         </article>
 
-        <div class="mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
-            ← Back to all stories
-          </a>
-          <div class="flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
+        <div class="mt-10 flex flex-col items-start md:flex-row md:items-center md:justify-between gap-4">
+          <div class="order-1 md:order-2 flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
             <span>Chapters</span>
             <a href="#chapter-1" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill chapter-pill-active">1</a>
             <a href="#chapter-2" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">2</a>
             <a href="#chapter-3" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">3</a>
           </div>
+          <a href="../index.html#stories" class="order-2 md:order-1 w-fit self-start inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
+            ← Back to all stories
+          </a>
         </div>
       </main>
     </div>

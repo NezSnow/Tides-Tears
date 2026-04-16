@@ -99,6 +99,19 @@
       background: rgba(200, 75, 49, 0.2);
       color: #C84B31;
     }
+    .chapter-label {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .chapter-label.typing {
+      border-right: 1px solid rgba(200, 75, 49, 0.75);
+      padding-right: 0.35em;
+      animation: caretBlink 850ms step-end infinite;
+    }
+    @keyframes caretBlink {
+      0%, 49% { border-right-color: rgba(200, 75, 49, 0.75); }
+      50%, 100% { border-right-color: transparent; }
+    }
     .story-header { position: relative; }
     .volume-control-wrap {
       position: absolute;
@@ -237,19 +250,25 @@
         closeMenu();
       });
 
-      // Start looping background music when the story page is opened; fallback to first click if autoplay is blocked
       var bgm = document.getElementById('story-bgm');
       if (bgm) {
         var played = false;
-        function tryPlay() {
+        function tryPlay(retries) {
           if (played) return;
           var p = bgm.play();
-          if (p && typeof p.then === 'function') p.then(function () { played = true; }).catch(function () {});
-          else played = true;
+          if (p && typeof p.then === 'function') {
+            p.then(function () { played = true; }).catch(function () {
+              if (retries > 0) setTimeout(function () { tryPlay(retries - 1); }, 250);
+            });
+          } else {
+            played = true;
+          }
         }
-        tryPlay();
-        document.addEventListener('click', tryPlay, { once: true });
-        document.addEventListener('touchstart', tryPlay, { once: true });
+        var fromNav = sessionStorage.getItem('tt_play') === '1';
+        sessionStorage.removeItem('tt_play');
+        tryPlay(fromNav ? 8 : 0);
+        document.addEventListener('click', function () { tryPlay(0); });
+        document.addEventListener('touchstart', function () { tryPlay(0); });
       }
 
       var volumeWrap = document.getElementById('volume-control-wrap');
@@ -287,7 +306,25 @@
 
         if (!chapterLinks.length || !chapterSections.length) return;
 
-        function showChapter(index) {
+        var typeTimer = null;
+        function typeLabel(text) {
+          if (!chapterLabel) return;
+          if (typeTimer) window.clearInterval(typeTimer);
+          chapterLabel.classList.add('typing');
+          chapterLabel.textContent = '';
+          var i = 0;
+          typeTimer = window.setInterval(function () {
+            chapterLabel.textContent = text.slice(0, i + 1);
+            i += 1;
+            if (i >= text.length) {
+              window.clearInterval(typeTimer);
+              typeTimer = null;
+              chapterLabel.classList.remove('typing');
+            }
+          }, 40);
+        }
+
+        function showChapter(index, shouldScroll) {
           chapterSections.forEach(function (sec, i) {
             if (!sec) return;
             if (i === index) {
@@ -299,17 +336,20 @@
           chapterLinks.forEach(function (link, i) {
             link.classList.toggle('chapter-pill-active', i === index);
           });
-          if (chapterLabel) {
-            chapterLabel.textContent = 'Chapter ' + (index + 1);
+          typeLabel('Chapter ' + (index + 1));
+          if (shouldScroll && chapterSections[index]) {
+            var targetRect = chapterSections[index].getBoundingClientRect();
+            var offset = window.pageYOffset + targetRect.top - 140;
+            window.scrollTo({ top: offset < 0 ? 0 : offset, behavior: 'smooth' });
           }
         }
 
-        showChapter(0);
+        showChapter(0, false);
 
         chapterLinks.forEach(function (link, index) {
           link.addEventListener('click', function (e) {
             e.preventDefault();
-            showChapter(index);
+            showChapter(index, true);
           });
         });
       })();
@@ -380,7 +420,7 @@
               </svg>
             </button>
           </div>
-          <p class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-3">When it began</p>
+          <p class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-3">December 25, 2023</p>
           <h1 class="story-title text-3xl md:text-5xl text-text-dark mb-4 pr-24">
             What If Your Greatest Love Became Your Toughest Trial?
           </h1>
@@ -394,25 +434,56 @@
           <figcaption class="mt-2 text-center text-xs text-text-dark/45 font-sans italic tracking-wide"><cite>500 Days of Summer</cite> (2009)</figcaption>
         </figure>
 
-        <p id="chapter-label" class="text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
+        <p id="chapter-label" class="chapter-label text-xs uppercase tracking-[0.3em] text-text-dark/60 mb-4">Chapter 1</p>
         <article class="story-article text-text-light/90" data-aos="fade-up" data-aos-delay="150">
-          <p id="chapter-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec mauris euismod, aliquet nulla at, hendrerit arcu. Vestibulum faucibus ligula sit amet eros ultrices, vitae tristique lectus volutpat. Integer non aliquet est. Donec bibendum, velit at auctor facilisis, justo nisi laoreet odio, non pharetra lorem ipsum id nunc.</p>
-          <p class="story-highlight">Curabitur ultrices vulputate justo sit amet faucibus. Praesent aliquam, ligula et dapibus gravida, lectus quam facilisis nisi, a luctus lectus arcu ac mi.</p>
-          <p id="chapter-2">Nullam volutpat nisl non mi tempus, vitae pellentesque lectus sagittis. Pellentesque in faucibus neque, nec faucibus erat. Sed cursus diam ut ex vehicula, sit amet laoreet elit bibendum. Vestibulum luctus dignissim laoreet. Vivamus at augue maximus, dignissim tortor at, molestie neque. Integer eget fermentum sem, vel placerat erat.</p>
-          <p class="story-highlight">Phasellus urna ex, sodales vitae arcu in, pretium viverra ipsum. Cras sit amet pretium ipsum. Quisque vitae sapien odio.</p>
-          <p id="chapter-3">Sed vitae lacus at velit luctus ullamcorper. Vestibulum a scelerisque mi. Nulla hendrerit condimentum quos. Pellentesque sit amet odio at ipsum iaculis fermentum. Etiam nec cursus nibh. Cras at odio in nibh ultricies fermentum sit amet non mauris.</p>
+          <div id="chapter-1">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec mauris euismod, aliquet nulla at, hendrerit arcu. Vestibulum faucibus ligula sit amet eros ultrices, vitae tristique lectus volutpat. Integer non aliquet est. Donec bibendum, velit at auctor facilisis, justo nisi laoreet odio, non pharetra lorem ipsum id nunc.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam volutpat luctus enim, in suscipit eros aliquet vitae. Integer vitae ipsum id magna laoreet luctus.</p>
+            <p>Maecenas non tortor ac odio egestas luctus. Phasellus pellentesque, justo non rutrum semper, ligula eros pretium arcu, sed mattis turpis nulla non ligula.</p>
+            <p>Proin volutpat, mauris eget tincidunt condimentum, sapien elit ultricies ligula, vitae porttitor lorem lorem id sem. Aenean sodales est ut neque auctor porta.</p>
+            <p>Vivamus porta leo dui, eget hendrerit lacus sollicitudin in. Etiam non nisl aliquet, efficitur lacus eu, feugiat arcu. Integer gravida laoreet urna vel fermentum.</p>
+            <p>Donec sed lorem purus. In ac ultricies lorem, ut faucibus purus. Sed tristique viverra erat, nec lacinia magna ultrices non.</p>
+            <p>Curabitur vel enim ac eros congue efficitur. Sed ut eros eu lectus tristique pulvinar. Suspendisse egestas condimentum libero, sed maximus risus aliquet non.</p>
+            <p>Integer finibus porttitor velit, at fermentum felis varius at. Integer volutpat, tellus quis malesuada bibendum, nulla lorem ullamcorper dolor, bibendum pretium mauris nibh vitae quam.</p>
+            <p>Aliquam non augue eget lacus tempor tincidunt. Praesent nec malesuada lectus. Aliquam sodales lacus non quam dictum accumsan.</p>
+            <p>Morbi varius est sed turpis faucibus, vitae aliquet sapien convallis. Donec ligula odio, sodales in dapibus id, consequat a erat.</p>
+          </div>
+          <div id="chapter-2">
+            <p class="story-highlight">Curabitur ultrices vulputate justo sit amet faucibus. Praesent aliquam, ligula et dapibus gravida, lectus quam facilisis nisi, a luctus lectus arcu ac mi.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis sem eget erat vehicula, at facilisis neque consequat. Pellentesque fermentum, enim in cursus vestibulum, lacus mauris molestie tellus, aliquet congue tortor ipsum non est.</p>
+            <p>Phasellus imperdiet, elit sed lacinia tincidunt, velit metus tempor eros, sed tincidunt metus nunc sed quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
+            <p>Curabitur suscipit magna non consequat pellentesque. Donec volutpat nibh ligula, ac varius nisi accumsan at. Pellentesque eget erat tincidunt, volutpat sem in, pharetra sem.</p>
+            <p>Morbi ac consequat elit, sit amet imperdiet enim. Maecenas eget ligula nec libero porta iaculis. Integer sed mi ligula. Integer posuere mollis lobortis.</p>
+            <p>Nullam tincidunt, massa eget volutpat hendrerit, enim odio efficitur neque, at tempor elit velit a erat. Sed luctus metus sit amet nunc auctor, in scelerisque nisl porttitor.</p>
+            <p>Sed vel libero quis erat dignissim imperdiet. Sed ut sem enim. Curabitur in vestibulum libero, eu dignissim ante.</p>
+            <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam commodo, tellus eu feugiat tincidunt, sem nisl elementum turpis, non faucibus nibh lorem quis ligula.</p>
+            <p>Praesent porta magna a nibh tristique hendrerit. Curabitur lacinia dictum arcu, id rhoncus magna scelerisque sed.</p>
+            <p>Suspendisse volutpat mauris a odio pretium, sit amet convallis tortor efficitur. Vestibulum aliquet sem quis imperdiet mollis.</p>
+          </div>
+          <div id="chapter-3">
+            <p>Sed vitae lacus at velit luctus ullamcorper. Vestibulum a scelerisque mi. Nulla hendrerit condimentum quos. Pellentesque sit amet odio at ipsum iaculis fermentum. Etiam nec cursus nibh. Cras at odio in nibh ultricies fermentum sit amet non mauris.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis purus non sem convallis feugiat. Etiam nec lectus pretium, volutpat odio id, semper magna.</p>
+            <p>Aliquam erat volutpat. In id velit ut lorem luctus volutpat non quis felis. Fusce eu dapibus eros, in congue lacus.</p>
+            <p>Morbi sed eros augue. Phasellus nec ultricies leo. In efficitur, est id viverra fermentum, felis justo mollis velit, at dictum sapien justo eget purus.</p>
+            <p>Integer bibendum leo sem, a fermentum risus iaculis sed. Aliquam fringilla sollicitudin sodales. Sed nec consequat libero, et varius libero.</p>
+            <p>Sed consectetur odio et tortor imperdiet, sed mollis risus sodales. Integer nec pretium justo, vel iaculis dolor.</p>
+            <p>Donec pellentesque, diam eget suscipit pretium, urna tellus egestas odio, vitae molestie massa ipsum et urna. Vivamus eu neque mattis, tempus mi sed, varius sapien.</p>
+            <p>Suspendisse sodales arcu nec eros blandit dignissim. Sed auctor arcu tristique dui sodales aliquam.</p>
+            <p>Etiam non enim odio. Nam id odio ullamcorper, pharetra nunc non, elementum nunc. Curabitur ut hendrerit magna.</p>
+            <p>Maecenas volutpat, diam a rhoncus venenatis, risus ligula vulputate dolor, ac condimentum arcu risus quis neque.</p>
+          </div>
         </article>
 
-        <div class="mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <a href="../index.html#stories" class="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
-            ← Back to all stories
-          </a>
-          <div class="flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
+        <div class="mt-10 flex flex-col items-start md:flex-row md:items-center md:justify-between gap-4">
+          <div class="order-1 md:order-2 flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] text-text-dark/60">
             <span>Chapters</span>
             <a href="#chapter-1" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill chapter-pill-active">1</a>
             <a href="#chapter-2" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">2</a>
             <a href="#chapter-3" data-chapter-link class="inline-flex items-center justify-center h-8 w-8 rounded-full chapter-pill">3</a>
           </div>
+          <a href="../index.html#stories" class="order-2 md:order-1 w-fit self-start inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary hover:text-background-dark transition-colors text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase">
+            ← Back to all stories
+          </a>
         </div>
       </main>
     </div>

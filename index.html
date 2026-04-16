@@ -166,6 +166,12 @@
                 var isLight = saved === 'light';
                 applyTheme(isLight);
             }
+
+            document.querySelectorAll('a[href*="greatest.html"], a[href*="tides.html"], a[href*="ephemeral.html"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    sessionStorage.setItem('tt_play', '1');
+                });
+            });
         });
     </script>
 </head>
@@ -229,7 +235,7 @@
 <div class="timeline-line hidden md:block" aria-hidden="true"></div>
 <article class="relative md:flex md:flex-row md:items-center md:gap-12 mb-16 md:mb-24 md:odd:flex-row-reverse" data-aos="fade-right" data-aos-duration="800" data-aos-delay="100">
 <div class="md:w-5/12 md:pl-8 md:odd:pl-0 md:odd:pr-8">
-<span class="inline-block px-3 py-1 rounded-full text-xs uppercase tracking-wider bg-primary/20 text-primary mb-3">When it began</span>
+<span class="inline-block px-3 py-1 rounded-full text-xs uppercase tracking-wider bg-primary/20 text-primary mb-3">December 25, 2023</span>
 <a href="html/greatest.html" class="group inline-block">
 <h3 class="font-display text-xl md:text-2xl font-semibold text-text-dark mb-2 group-hover:text-primary transition-colors">
     What If Your Greatest Love Became Your Toughest Trial?
@@ -243,11 +249,11 @@
 </article>
 <article class="relative md:flex md:flex-row md:items-center md:gap-12 mb-16 md:mb-24 md:odd:flex-row-reverse" data-aos="fade-left" data-aos-duration="800" data-aos-delay="100">
 <div class="md:w-5/12 md:pl-8 md:odd:pl-0 md:odd:pr-8">
-<span class="inline-block px-3 py-1 rounded-full text-xs uppercase tracking-wider bg-primary/20 text-primary mb-3">The middle</span>
+<span class="inline-block px-3 py-1 rounded-full text-xs uppercase tracking-wider bg-primary/20 text-primary mb-3">January 31, 2026</span>
 <a href="html/tides.html" class="group inline-block">
 <h3 class="font-display text-xl md:text-2xl font-semibold text-text-dark mb-2 group-hover:text-primary transition-colors">Bawat Kapit at Alis Mo.</h3>
 </a>
-<p class="text-text-dark/70 text-sm md:text-base leading-relaxed">Moments of doubt, clarity, and small victories. The in-between that shapes who we become.</p>
+<p class="text-text-dark/70 text-sm md:text-base leading-relaxed">When love competes with a system demanding bought proof of our worth. A raw look at how genuine affection is calculated, negotiated, and redefined.</p>
 </div>
 <a href="html/tides.html" class="mt-4 md:mt-0 md:w-5/12 aspect-[4/3] rounded-lg border border-white/10 overflow-hidden flex items-center justify-center bg-black/40 hover:border-primary/60 hover:shadow-xl transition duration-300" data-aos="zoom-in" data-aos-duration="700" data-aos-delay="250" aria-label="Read Bawat Kapit at Alis Mo">
 <img src="images/Ephemeral.jpg" alt="Materialists (2025) — Illustration for Bawat Kapit at Alis Mo" class="w-full h-full object-cover">
